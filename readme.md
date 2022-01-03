@@ -1,5 +1,10 @@
 # Getting Started
 
+This project contain the following branch
+* `main branch` or `redis-with-dynamodb` use dynamodb as persist layer
+* `redis-mysql-testcontainer` use test container as persist layer only available in docker environment
+* `redis-with-postgresql` use postgresql as persist layer
+
 ## Springboot References
 For further reference, please consider the following sections:
 
@@ -27,6 +32,8 @@ https://itembase.com/resources/blog/tech/spring-boot-2-best-practices-for-reacti
 
 https://medium.com/@cheron.antoine/reactor-java-1-how-to-create-mono-and-flux-471c505fa158
 
+https://medium.com/pictet-technologies-blog/reactive-programming-with-spring-data-r2dbc-ee9f1c24848b
+
 ## Original requirment spec
 
 https://drive.google.com/file/d/10AT6lbKYlUl1KJ3P2B__ziDJghSv2xaY/view
@@ -42,22 +49,24 @@ https://drive.google.com/file/d/10AT6lbKYlUl1KJ3P2B__ziDJghSv2xaY/view
 
 ## How to run
 
-1. First, create a new file named `application-local.yml` under the main's resources folder, with your own api keys:
+1. go http://api.weatherstack.com/ and http://open-weather-map to register api key
+
+2. First, create a new file named `application-local.yml` under the main's resources folder, with your own api keys:
 
    ```
-   weather-stack-access-key: <your own key>
-   open-weather-map-access-key: <you own key>
+   weather-stack-access-key: <your own key in step 1>
+   open-weather-map-access-key: <your own key in step 1>
    ```
 
-2. **If docker and docker-compose installed**
-    
-    Modify `docker-compose.yml` file to comment in the _awscli_ section, then
-    
+3. **If docker and docker-compose installed**
+
+   Modify `docker-compose.yml` file to comment in the _awscli_ section, then
+
     ```shell
     $ docker-compose up -d
     ```
 
-    and run this application from within IDE.
+   and run this application from within IDE.
 
 
 3. **Or with podman and podman-compose installed**
@@ -65,17 +74,18 @@ https://drive.google.com/file/d/10AT6lbKYlUl1KJ3P2B__ziDJghSv2xaY/view
     ```shell
     $ podman-compose up -d
     ```
-    Then, run the following aws command (you need to install the AWS client command first)
+   Then, run the following aws command (you need to install the AWS client command first)
+   _only for `main branch` or `redis-with-dynamodb`_
 
     ```shell
     $ aws dynamodb --endpoint-url http://localhost:8042 create-table --table-name city-weather-info --attribute-definitions AttributeName=city,AttributeType=S --key-schema AttributeName=city,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
     ```
 
-   and run this application from within IDE.
-
+   and **run this application from within IDE.**
 
 4. To test the application, run
 
     ```shell
     $ curl http://localhost:8080/weather/New%20York
     ```
+   
